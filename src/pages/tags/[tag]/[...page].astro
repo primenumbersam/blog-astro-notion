@@ -2,7 +2,7 @@
 import { getCollection } from 'astro:content';
 import PostLayout from '../../layouts/PostLayout.astro';
 
-export async function getStaticPaths() {
+export async function getStaticPaths({ paginate }: { paginate: any }) {
   const posts = await getCollection('posts');
   const publicPosts = posts.filter(post => !post.data.isPrivate);
   
@@ -13,25 +13,26 @@ export async function getStaticPaths() {
     }
   });
 
-  return Array.from(tags).map(tag => ({
-    params: { tag },
-    props: {
-      posts: publicPosts.filter(post => post.data.tags?.includes(tag)).sort((a, b) => 
-        new Date(b.data.createdTime).getTime() - new Date(a.data.createdTime).getTime()
-      )
-    }
-  }));
+  return Array.from(tags).flatMap(tag => {
+    const filteredPosts = publicPosts.filter(post => post.data.tags?.includes(tag)).sort((a, b) => 
+      new Date(b.data.createdTime).getTime() - new Date(a.data.createdTime).getTime()
+    );
+    return paginate(filteredPosts, {
+      params: { tag },
+      pageSize: 20
+    });
+  });
 }
 
 const { tag } = Astro.params;
-const { posts } = Astro.props;
+const { page } = Astro.props;
 ---
 <PostLayout title={`Posts tagged "${tag}"`} description={`Articles tagged with ${tag}`}>
   <h1 class="post-title" style="text-transform: capitalize;">{tag}</h1>
   <p class="post-meta" style="margin-bottom: 3rem;">Posts tagged with "{tag}".</p>
   
   <ul class="post-list">
-    {posts.map((post) => (
+    {page.data.map((post: any) => (
       <li class="post-item">
         {post.data.leadImage && (
           <a href={`/posts/${post.data.slug}`} class="post-item-image-link">
@@ -53,4 +54,10 @@ const { posts } = Astro.props;
       </li>
     ))}
   </ul>
+
+  <nav class="pagination" style="display: flex; justify-content: space-between; align-items: center; margin-top: 3rem;">
+    {page.url.prev ? <a href={page.url.prev} class="btn-primary" style="text-decoration: none;">&larr; Prev</a> : <div style="width: 80px;"></div>}
+    <span style="font-size: 0.9rem; color: #666;">Page {page.currentPage} of {page.lastPage}</span>
+    {page.url.next ? <a href={page.url.next} class="btn-primary" style="text-decoration: none;">Next &rarr;</a> : <div style="width: 80px;"></div>}
+  </nav>
 </PostLayout>

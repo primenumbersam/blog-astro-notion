@@ -41,8 +41,9 @@ const { page } = Astro.props;
     ))}
   </ul>
 
-  <nav class="pagination" style="display: flex; justify-content: space-between; margin-top: 3rem;">
-    {page.url.prev ? <a href={page.url.prev} class="btn-primary" style="text-decoration: none;">&larr; Previous Page</a> : <div></div>}
-    {page.url.next ? <a href={page.url.next} class="btn-primary" style="text-decoration: none;">Next Page &rarr;</a> : <div></div>}
+  <nav class="pagination" style="display: flex; justify-content: space-between; align-items: center; margin-top: 3rem;">
+    {page.url.prev ? <a href={page.url.prev} class="btn-primary" style="text-decoration: none;">&larr; Prev</a> : <div style="width: 80px;"></div>}
+    <span style="font-size: 0.9rem; color: #666;">Page {page.currentPage} of {page.lastPage}</span>
+    {page.url.next ? <a href={page.url.next} class="btn-primary" style="text-decoration: none;">Next &rarr;</a> : <div style="width: 80px;"></div>}
   </nav>
 </PostLayout>
