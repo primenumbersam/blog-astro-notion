@@ -1,0 +1,16 @@
+name = "blog-deploy-triggers"
+main = "workers/index.js"
+compatibility_date = "2026-03-06"
+
+[triggers]
+crons = ["*/15 * * * *"]
+
+[[kv_namespaces]]
+binding = "DEPLOY_STATE_KV"
+id = "94b25399bf7d48b3830b5e6de6e1efca"
+
+[vars]
+CLOUDFLARE_ACCOUNT_ID = "0930bc7eebbc2959b06cfebf2d0b64ee"
+CF_PROJECT_NAME = "blog-astro-notion"
+NOTION_DATABASE_ID = "2d1d716ee0de808eb523e2c688273578"
+# CF_API_TOKEN is stored as a secret (wrangler secret put CF_API_TOKEN)

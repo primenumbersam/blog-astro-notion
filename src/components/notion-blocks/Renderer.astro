@@ -1,0 +1,96 @@
+---
+const { blocks } = Astro.props;
+
+import Callout from './Callout.astro';
+import Code from './Code.astro';
+import Table from './Table.astro';
+import Equation from './Equation.astro';
+import TOC from './TOC.astro';
+import RichText from './RichText.astro';
+import Quote from './Quote.astro';
+
+function getHeadingText(rich_text: any[]) {
+  if (!rich_text) return '';
+  return rich_text.map((t: any) => t.plain_text).join('');
+}
+
+function getHeadingId(text: string) {
+  return text.toLowerCase().replace(/[^a-z0-9ㄱ-ㅎㅏ-ㅣ가-힣]+/g, '-').replace(/(^-|-$)/g, '');
+}
+
+const groupedBlocks = [];
+let currentList: any = null;
+
+for (const block of blocks) {
+  if (block.type === 'bulleted_list_item') {
+    if (currentList && currentList.type === 'bulleted_list') {
+      currentList.items.push(block);
+    } else {
+      currentList = { type: 'bulleted_list', items: [block] };
+      groupedBlocks.push(currentList);
+    }
+  } else if (block.type === 'numbered_list_item') {
+    if (currentList && currentList.type === 'numbered_list') {
+      currentList.items.push(block);
+    } else {
+      currentList = { type: 'numbered_list', items: [block] };
+      groupedBlocks.push(currentList);
+    }
+  } else {
+    currentList = null;
+    groupedBlocks.push(block);
+  }
+}
+---
+
+{groupedBlocks.map((block: any) => {
+  switch (block.type) {
+    case 'paragraph':
+      return <p class="notion-p"><RichText text={block.paragraph.rich_text} /></p>;
+    case 'heading_1': {
+      const text = getHeadingText(block.heading_1.rich_text);
+      return <h1 id={getHeadingId(text)} class="notion-h1"><RichText text={block.heading_1.rich_text} /></h1>;
+    }
+    case 'heading_2': {
+      const text = getHeadingText(block.heading_2.rich_text);
+      return <h2 id={getHeadingId(text)} class="notion-h2"><RichText text={block.heading_2.rich_text} /></h2>;
+    }
+    case 'heading_3': {
+      const text = getHeadingText(block.heading_3.rich_text);
+      return <h3 id={getHeadingId(text)} class="notion-h3"><RichText text={block.heading_3.rich_text} /></h3>;
+    }
+    case 'bulleted_list':
+      return (
+        <ul class="notion-list" style="list-style-type: disc;">
+          {block.items.map((item: any) => (
+            <li><RichText text={item.bulleted_list_item.rich_text} /></li>
+          ))}
+        </ul>
+      );
+    case 'numbered_list':
+      return (
+        <ol class="notion-list" style="list-style-type: decimal;">
+          {block.items.map((item: any) => (
+            <li><RichText text={item.numbered_list_item.rich_text} /></li>
+          ))}
+        </ol>
+      );
+    case 'image':
+      return <img src={block.image.localPath || block.image.file?.url || block.image.external?.url} alt="Notion Image" class="notion-img" />;
+    case 'callout':
+      return <Callout block={block} />;
+    case 'quote':
+      return <Quote block={block} />;
+    case 'code':
+      return <Code block={block} />;
+    case 'equation':
+      return <Equation block={block} />;
+    case 'table':
+      return <Table block={block} />;
+    case 'table_of_contents':
+      return <TOC blocks={blocks} />;
+    default:
+      // Fallback for unsupported blocks
+      return null;
+  }
+})}

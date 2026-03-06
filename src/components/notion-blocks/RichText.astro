@@ -1,0 +1,49 @@
+---
+import katex from 'katex';
+import 'katex/dist/katex.min.css';
+
+const { text } = Astro.props;
+
+function renderRichText(t: any) {
+  let content = '';
+
+  if (t.type === 'equation') {
+    try {
+      content = katex.renderToString(t.equation.expression, { throwOnError: false, displayMode: false });
+    } catch (e) {
+      console.error(e);
+      content = t.plain_text;
+    }
+  } else {
+    // Escape HTML from text.content? Astro curly braces automatically escape, but we are returning a string to set:html 
+    // Wait, since we are doing manual string concat, we should escape. Or we can just build an array of elements.
+    // Astro components can return JSX elements.
+  }
+}
+---
+{text && text.map((t: any) => {
+  if (t.type === 'equation') {
+    try {
+      const html = katex.renderToString(t.equation.expression, { throwOnError: false, displayMode: false });
+      return <span set:html={html} />;
+    } catch (e) {
+      return <span>{t.plain_text}</span>;
+    }
+  }
+
+  let element: any = t.plain_text;
+
+  if (t.annotations?.bold) element = <strong>{element}</strong>;
+  if (t.annotations?.italic) element = <em>{element}</em>;
+  if (t.annotations?.strikethrough) element = <del>{element}</del>;
+  if (t.annotations?.underline) element = <u>{element}</u>;
+  if (t.annotations?.code) element = <code class="notion-inline-code">{element}</code>;
+  
+  // Custom color support can be added later
+
+  if (t.href) {
+    element = <a href={t.href} class="notion-link">{element}</a>;
+  }
+
+  return element;
+})}

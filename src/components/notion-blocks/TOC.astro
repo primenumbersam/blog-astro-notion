@@ -1,0 +1,31 @@
+---
+const { blocks } = Astro.props;
+
+function getHeadingText(rich_text: any[]) {
+  if (!rich_text) return '';
+  return rich_text.map((t: any) => t.plain_text).join('');
+}
+
+function getHeadingId(text: string) {
+  return text.toLowerCase().replace(/[^a-z0-9ㄱ-ㅎㅏ-ㅣ가-힣]+/g, '-').replace(/(^-|-$)/g, '');
+}
+
+const headings = blocks.filter((b: any) => b.type === 'heading_1' || b.type === 'heading_2' || b.type === 'heading_3');
+---
+{headings.length > 0 && (
+  <nav class="notion-toc">
+    <div class="notion-toc-title">Table of Contents</div>
+    <ul class="notion-toc-list">
+      {headings.map((h: any) => {
+        const text = getHeadingText(h[h.type].rich_text);
+        const id = getHeadingId(text);
+        const level = parseInt(h.type.replace('heading_', ''), 10);
+        return (
+          <li class={`notion-toc-item notion-toc-level-${level}`}>
+            <a href={`#${id}`}>{text}</a>
+          </li>
+        );
+      })}
+    </ul>
+  </nav>
+)}

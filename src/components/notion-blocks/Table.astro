@@ -1,0 +1,28 @@
+---
+import RichText from './RichText.astro';
+
+const { block } = Astro.props;
+
+const rows = block.table?.children || [];
+const hasColumnHeader = block.table?.has_column_header;
+const hasRowHeader = block.table?.has_row_header;
+---
+<div class="notion-table-container">
+  <table class="notion-table">
+    <tbody>
+      {rows.map((row: any, rowIndex: number) => (
+        <tr>
+          {row.table_row?.cells?.map((cell: any[], cellIndex: number) => {
+            const isHeader = (hasColumnHeader && rowIndex === 0) || (hasRowHeader && cellIndex === 0);
+            const Tag = isHeader ? 'th' : 'td';
+            return (
+              <Tag class={isHeader ? 'notion-table-header' : 'notion-table-cell'}>
+                <RichText text={cell} />
+              </Tag>
+            );
+          })}
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>

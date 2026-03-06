@@ -1,0 +1,52 @@
+---
+import './global.css';
+
+const { title, description, createdTime, lastEdited, isPrivate } = Astro.props;
+---
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description || title} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description || title} />
+    {createdTime && (
+      <script is:inline type="application/ld+json" set:html={JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": title,
+        "datePublished": createdTime,
+        "dateModified": lastEdited,
+        "description": description,
+      })} />
+    )}
+  </head>
+  <body>
+    <div class="layout-container">
+      <header class="nav-header">
+        <a href="/" class="nav-logo">Tech Guide<span style="color:var(--color-accent)">.</span></a>
+        <a href="/private" style="font-size:0.8rem;background:var(--color-bg-subtle);padding:0.2rem 0.6rem;border-radius:12px;border:1px solid var(--color-border);text-decoration:none;color:inherit;cursor:pointer;">
+          Internal / Private
+        </a>
+      </header>
+      <main>
+        <slot />
+      </main>
+      <footer>
+        <div class="footer-content">
+          <div class="copyright">
+            2023-<span id="current-year">{new Date().getFullYear()}</span> &copy;
+            <a href="https://gitsam.com">GITSAM</a>
+            <a href="mailto:primenumbersam@gmail.com">Email</a>
+          </div>
+          <div class="footer-links">
+            <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank">CC BY-SA 4.0</a>
+            <a href="https://gitsam.com/disclaimer.html">Disclaimer</a>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>

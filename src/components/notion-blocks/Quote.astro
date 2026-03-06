@@ -1,0 +1,7 @@
+---
+import RichText from './RichText.astro';
+const { block } = Astro.props;
+---
+<blockquote class="notion-quote">
+  <RichText text={block.quote.rich_text} />
+</blockquote>

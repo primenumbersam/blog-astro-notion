@@ -1,0 +1,48 @@
+---
+import { getCollection } from 'astro:content';
+import PostLayout from '../../layouts/PostLayout.astro';
+import NotionRenderer from '../../components/notion-blocks/Renderer.astro';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('posts');
+  // Strict filter for public posts
+  const publicPosts = posts.filter((p) => !p.data.isPrivate);
+  
+  return publicPosts.map((post) => ({
+    params: { slug: post.data.slug },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+---
+<PostLayout 
+  title={post.data.title} 
+  description={post.data.description}
+  createdTime={post.data.createdTime}
+  lastEdited={post.data.lastEdited}
+  isPrivate={post.data.isPrivate}
+>
+  <article>
+    <header style="margin-bottom: 3rem; border-bottom: 1px solid var(--color-border); padding-bottom: 2rem;">
+      <h1 class="post-title">{post.data.title}</h1>
+      <div class="post-meta">
+        <span>Created: {new Date(post.data.createdTime).toLocaleDateString()}</span>
+        {post.data.tags?.length > 0 && (
+          <span style="display:flex; gap:0.5rem;">
+            {post.data.tags.map((tag: string) => (
+              <a href={`/tags/${tag}`} class="post-tag" style="text-decoration:none;">{tag}</a>
+            ))}
+          </span>
+        )}
+      </div>
+      {post.data.leadImage && post.data.leadImage !== '/favicon.png' && (
+        <img src={post.data.leadImage} alt="Cover" class="notion-img" style="margin: 0; margin-top: 1.5rem; width: 100%; object-fit: cover; aspect-ratio: 16/9; border-radius: 12px;" />
+      )}
+    </header>
+    
+    <div class="post-content">
+      <NotionRenderer blocks={post.data.blocks} />
+    </div>
+  </article>
+</PostLayout>

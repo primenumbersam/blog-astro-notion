@@ -1,27 +1,27 @@
 ---
 import { getCollection } from 'astro:content';
-import PostLayout from '../layouts/PostLayout.astro';
+import PostLayout from '../../layouts/PostLayout.astro';
 
 const posts = await getCollection('posts');
-const publicPosts = posts.filter(post => !post.data.isPrivate);
-const sorted = publicPosts.sort((a, b) =>
+const privatePosts = posts.filter(post => post.data.isPrivate);
+const sorted = privatePosts.sort((a, b) =>
   new Date(b.data.createdTime).getTime() - new Date(a.data.createdTime).getTime()
 );
 ---
-<PostLayout title="Tech Guide" description="A minimal technical blog generated from Notion">
-  <h1 class="post-title">Latest Articles</h1>
-  <p class="post-meta" style="margin-bottom: 3rem;">Recent technical notes.</p>
+<PostLayout title="Internal / Private" description="Private internal documentation and writings" isPrivate={true}>
+  <h1 class="post-title">Internal / Private</h1>
+  <p class="post-meta" style="margin-bottom: 3rem; color: #ef4444;">Confidential internal documents.</p>
   
   <ul class="post-list">
     {sorted.map((post) => (
       <li class="post-item">
         {post.data.leadImage && (
-          <a href={`/posts/${post.data.slug}`} class="post-item-image-link">
+          <a href={`/private/${post.data.slug}`} class="post-item-image-link" style="filter: grayscale(20%);">
             <img src={post.data.leadImage} alt={post.data.title} class="post-item-image" loading="lazy" />
           </a>
         )}
         <div class="post-item-content">
-          <a href={`/posts/${post.data.slug}`} class="post-item-link">{post.data.title}</a>
+          <a href={`/private/${post.data.slug}`} class="post-item-link">{post.data.title}</a>
           <p class="post-item-desc">
             {post.data.description || 'No description provided.'}
           </p>

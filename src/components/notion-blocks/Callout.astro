@@ -1,0 +1,10 @@
+---
+import RichText from './RichText.astro';
+
+const { block } = Astro.props;
+const icon = block.callout.icon?.emoji || '💡';
+---
+<div class="notion-callout">
+  <div class="notion-callout-icon">{icon}</div>
+  <div class="notion-callout-text"><RichText text={block.callout.rich_text} /></div>
+</div>

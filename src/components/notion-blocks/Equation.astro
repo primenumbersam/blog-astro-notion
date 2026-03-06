@@ -1,0 +1,19 @@
+---
+import katex from 'katex';
+import 'katex/dist/katex.min.css';
+
+const { block } = Astro.props;
+let expression = '';
+
+if (block.equation && block.equation.expression) {
+    expression = block.equation.expression;
+}
+
+let html = expression;
+try {
+  html = katex.renderToString(expression, { throwOnError: false, displayMode: true });
+} catch (e) {
+  console.error('KaTeX error:', e);
+}
+---
+<div class="notion-equation" set:html={html} />

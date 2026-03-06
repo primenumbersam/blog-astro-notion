@@ -22,4 +22,8 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# Custom
 SPEC.md
+GEMINI.md
+.agents/

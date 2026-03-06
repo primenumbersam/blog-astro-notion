@@ -1,0 +1,56 @@
+---
+import { getCollection } from 'astro:content';
+import PostLayout from '../../layouts/PostLayout.astro';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('posts');
+  const publicPosts = posts.filter(post => !post.data.isPrivate);
+  
+  const tags = new Set<string>();
+  publicPosts.forEach(post => {
+    if (post.data.tags) {
+      post.data.tags.forEach((tag: string) => tags.add(tag));
+    }
+  });
+
+  return Array.from(tags).map(tag => ({
+    params: { tag },
+    props: {
+      posts: publicPosts.filter(post => post.data.tags?.includes(tag)).sort((a, b) => 
+        new Date(b.data.createdTime).getTime() - new Date(a.data.createdTime).getTime()
+      )
+    }
+  }));
+}
+
+const { tag } = Astro.params;
+const { posts } = Astro.props;
+---
+<PostLayout title={`Posts tagged "${tag}"`} description={`Articles tagged with ${tag}`}>
+  <h1 class="post-title" style="text-transform: capitalize;">{tag}</h1>
+  <p class="post-meta" style="margin-bottom: 3rem;">Posts tagged with "{tag}".</p>
+  
+  <ul class="post-list">
+    {posts.map((post) => (
+      <li class="post-item">
+        {post.data.leadImage && (
+          <a href={`/posts/${post.data.slug}`} class="post-item-image-link">
+            <img src={post.data.leadImage} alt={post.data.title} class="post-item-image" loading="lazy" />
+          </a>
+        )}
+        <div class="post-item-content">
+          <a href={`/posts/${post.data.slug}`} class="post-item-link">{post.data.title}</a>
+          <p class="post-item-desc">
+            {post.data.description || 'No description provided.'}
+          </p>
+          <div class="post-item-meta">
+            {post.data.tags?.map((t: string) => (
+              <a href={`/tags/${t}`} class="post-tag">{t}</a>
+            ))}
+            <span class="post-date">{new Date(post.data.createdTime).toLocaleDateString()}</span>
+          </div>
+        </div>
+      </li>
+    ))}
+  </ul>
+</PostLayout>

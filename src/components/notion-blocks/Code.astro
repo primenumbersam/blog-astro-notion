@@ -1,0 +1,21 @@
+---
+const { block } = Astro.props;
+const text = block.code.rich_text.map((t: any) => t.plain_text).join('');
+const lang = block.code.language;
+---
+{lang === 'mermaid' ? (
+  <div class="notion-mermaid-wrapper" style="text-align: center; margin: 2.5rem 0;">
+    <div class="mermaid">{text}</div>
+    <script type="module">
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+      mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
+  </div>
+) : (
+  <div class="notion-code-wrapper">
+    <div class="notion-code-header">
+      {lang}
+    </div>
+    <pre class="notion-code-pre"><code class={`language-${lang}`}>{text}</code></pre>
+  </div>
+)}
