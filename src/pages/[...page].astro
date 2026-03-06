@@ -2,18 +2,23 @@
 import { getCollection } from 'astro:content';
 import PostLayout from '../layouts/PostLayout.astro';
 
-const posts = await getCollection('posts');
-const publicPosts = posts.filter(post => !post.data.isPrivate);
-const sorted = publicPosts.sort((a, b) =>
-  new Date(b.data.createdTime).getTime() - new Date(a.data.createdTime).getTime()
-);
+export async function getStaticPaths({ paginate }: { paginate: any }) {
+  const posts = await getCollection('posts');
+  const publicPosts = posts.filter(post => !post.data.isPrivate);
+  const sorted = publicPosts.sort((a, b) =>
+    new Date(b.data.createdTime).getTime() - new Date(a.data.createdTime).getTime()
+  );
+  return paginate(sorted, { pageSize: 20 });
+}
+
+const { page } = Astro.props;
 ---
 <PostLayout title="Tech Guide" description="A minimal technical blog generated from Notion">
   <h1 class="post-title">Latest Articles</h1>
   <p class="post-meta" style="margin-bottom: 3rem;">Recent technical notes.</p>
   
   <ul class="post-list">
-    {sorted.map((post) => (
+    {page.data.map((post: any) => (
       <li class="post-item">
         {post.data.leadImage && (
           <a href={`/posts/${post.data.slug}`} class="post-item-image-link">
@@ -35,4 +40,9 @@ const sorted = publicPosts.sort((a, b) =>
       </li>
     ))}
   </ul>
+
+  <nav class="pagination" style="display: flex; justify-content: space-between; margin-top: 3rem;">
+    {page.url.prev ? <a href={page.url.prev} class="btn-primary" style="text-decoration: none;">&larr; Previous Page</a> : <div></div>}
+    {page.url.next ? <a href={page.url.next} class="btn-primary" style="text-decoration: none;">Next Page &rarr;</a> : <div></div>}
+  </nav>
 </PostLayout>
