@@ -1,0 +1,15 @@
+{
+  "name": "blog-astro-notion",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@notionhq/client": "^5.11.1",
+    "astro": "^5.17.1"
+  }
+}
