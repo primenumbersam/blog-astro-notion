@@ -11,12 +11,19 @@ export function notionLoader(options: {
         async load({ store, logger }) {
             logger.info('Fetching Notion DB...');
 
-            const response = await notion.databases.query({
-                database_id: options.databaseId,
-                filter: options.filter,
-            });
+            let cursor: string | undefined;
+            const allPages: any[] = [];
+            do {
+                const response = await notion.databases.query({
+                    database_id: options.databaseId,
+                    filter: options.filter,
+                    start_cursor: cursor,
+                });
+                allPages.push(...response.results);
+                cursor = response.has_more ? (response.next_cursor ?? undefined) : undefined;
+            } while (cursor);
 
-            for (const page of response.results) {
+            for (const page of allPages) {
                 if (!('properties' in page)) continue;
 
                 const slug = extractText(page.properties.Slug);
