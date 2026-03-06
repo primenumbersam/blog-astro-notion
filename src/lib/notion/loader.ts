@@ -1,4 +1,4 @@
-import type { Loader } from 'astro/content';
+import type { Loader } from 'astro/loaders';
 import { notion, fetchBlockChildren } from './client';
 import { downloadImage } from './images';
 
