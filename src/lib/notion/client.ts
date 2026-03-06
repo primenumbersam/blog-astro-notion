@@ -32,25 +32,23 @@ export async function fetchPublishedPosts() {
 }
 
 export async function fetchBlockChildren(blockId: string) {
-    return limit(async () => {
-        const blocks: any[] = [];
-        let cursor: string | undefined;
-        do {
-            const response = await notion.blocks.children.list({
-                block_id: blockId,
-                start_cursor: cursor,
-            });
-            blocks.push(...response.results);
-            cursor = response.has_more ? (response.next_cursor ?? undefined) : undefined;
-        } while (cursor);
+    const blocks: any[] = [];
+    let cursor: string | undefined;
+    do {
+        const response = await limit(() => notion.blocks.children.list({
+            block_id: blockId,
+            start_cursor: cursor,
+        }));
+        blocks.push(...response.results);
+        cursor = response.has_more ? (response.next_cursor ?? undefined) : undefined;
+    } while (cursor);
 
-        // Recursively fetch children for certain blocks that require it
-        for (const block of blocks) {
-            if (block.has_children && (block.type === 'table' || block.type === 'column_list' || block.type === 'column')) {
-                block[block.type].children = await fetchBlockChildren(block.id);
-            }
+    // Recursively fetch children for certain blocks that require it
+    for (const block of blocks) {
+        if (block.has_children && (block.type === 'table' || block.type === 'column_list' || block.type === 'column')) {
+            block[block.type].children = await fetchBlockChildren(block.id);
         }
+    }
 
-        return blocks;
-    });
+    return blocks;
 }
