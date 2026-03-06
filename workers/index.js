@@ -24,7 +24,7 @@ export default {
                 method: 'POST',
                 headers,
                 body: JSON.stringify({
-                    filter: { property: 'Status', select: { equals: 'Test' } }, // Initially for Test
+                    filter: { property: 'Status', select: { equals: 'Published' } },
                     sorts: [{ property: 'Last edited time', direction: 'descending' }],
                     page_size: 1,
                 }),

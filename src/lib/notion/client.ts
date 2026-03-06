@@ -21,7 +21,7 @@ export async function fetchPublishedPosts() {
             database_id: DATABASE_ID!,
             filter: {
                 property: 'Status',
-                select: { equals: 'Test' }, // Only 'Test' for initial deployment
+                select: { equals: 'Published' },
             },
             sorts: [
                 { property: 'Created time', direction: 'descending' },
