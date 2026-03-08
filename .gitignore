@@ -24,6 +24,7 @@ pnpm-debug.log*
 .idea/
 
 # Custom
+TEMP.md
 SPEC.md
 GEMINI.md
 .agents/

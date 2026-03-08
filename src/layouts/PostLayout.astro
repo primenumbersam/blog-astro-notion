@@ -22,6 +22,15 @@ const { title, description, createdTime, lastEdited, isPrivate } = Astro.props;
         "description": description,
       })} />
     )}
+    <!-- Google tag (gtag.js) -->
+    <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-W42H591YV5"></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-W42H591YV5');
+    </script>
   </head>
   <body>
     <div class="layout-container">
