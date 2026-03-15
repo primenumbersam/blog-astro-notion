@@ -169,13 +169,42 @@ h6 {
 
 .notion-code-header {
     background-color: var(--color-bg-subtle);
-    padding: 0.75rem 1.25rem;
+    padding: 0.5rem 1rem;
     font-size: 0.8rem;
     font-family: monospace;
     text-transform: uppercase;
     color: var(--color-text-muted);
     border-bottom: 1px solid var(--color-border);
     letter-spacing: 0.05em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.notion-code-copy-btn {
+    background: none;
+    border: none;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    text-transform: none;
+    letter-spacing: normal;
+}
+
+.notion-code-copy-btn:hover {
+    background-color: var(--color-bg);
+    color: var(--color-accent);
+}
+
+.notion-code-copy-btn.copied {
+    color: #10b981; /* Success green */
 }
 
 .notion-code-pre {
