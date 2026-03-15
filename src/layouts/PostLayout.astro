@@ -1,5 +1,6 @@
 ---
 import './global.css';
+import Search from '../components/Search.astro';
 
 const { title, description, createdTime, lastEdited, isPrivate } = Astro.props;
 ---
@@ -36,9 +37,12 @@ const { title, description, createdTime, lastEdited, isPrivate } = Astro.props;
     <div class="layout-container">
       <header class="nav-header">
         <a href="/" class="nav-logo">Tech Guide<span style="color:var(--color-accent)">.</span></a>
-        <a href="/private" style="font-size:0.8rem;background:var(--color-bg-subtle);padding:0.2rem 0.6rem;border-radius:12px;border:1px solid var(--color-border);text-decoration:none;color:inherit;cursor:pointer;">
-          Internal / Private
-        </a>
+        <div style="display:flex; align-items:center; gap:1rem;">
+          <a href="/private" style="font-size:0.8rem;background:var(--color-bg-subtle);padding:0.2rem 0.6rem;border-radius:12px;border:1px solid var(--color-border);text-decoration:none;color:inherit;cursor:pointer;">
+            Internal / Private
+          </a>
+          <Search />
+        </div>
       </header>
       <main>
         <slot />
