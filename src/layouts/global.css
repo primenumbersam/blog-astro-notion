@@ -67,7 +67,7 @@ a:hover {
 
 .nav-logo {
     font-weight: 700;
-    font-size: 2.0rem;
+    font-size: 1.8rem;
     text-decoration: none;
     letter-spacing: -0.02em;
 }
@@ -86,7 +86,7 @@ h6 {
 }
 
 .post-title {
-    font-size: 1.75rem;
+    font-size: 1.5rem;
     font-weight: 700;
     margin-top: 0;
     margin-bottom: 0.5rem;
@@ -204,7 +204,8 @@ h6 {
 }
 
 .notion-code-copy-btn.copied {
-    color: #10b981; /* Success green */
+    color: #10b981;
+    /* Success green */
 }
 
 .notion-code-pre {
@@ -277,7 +278,7 @@ h6 {
 }
 
 .post-item-link {
-    font-size: 1.35rem;
+    font-size: 1.1rem;
     font-weight: 700;
     text-decoration: none;
     letter-spacing: -0.01em;
