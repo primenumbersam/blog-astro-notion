@@ -1,46 +1,71 @@
 ---
 import katex from 'katex';
-import 'katex/dist/katex.min.css';
 
 const { text } = Astro.props;
 
-function renderRichText(t: any) {
-  let content = '';
-
-  if (t.type === 'equation') {
-    try {
-      content = katex.renderToString(t.equation.expression, { throwOnError: false, displayMode: false });
-    } catch (e) {
-      console.error(e);
-      content = t.plain_text;
+/**
+ * Renders LaTeX inside a plain text string that uses $ delimiters.
+ * Returns a string of HTML that can be used with set:html.
+ */
+function renderMathInText(plainText: string) {
+  if (!plainText) return '';
+  
+  // Find $...$ patterns.
+  // Note: This is a simple regex that doesn't handle escaped \$ yet.
+  // In a robust implementation, you might want to handle that.
+  const parts = plainText.split(/(\$[^\$]+\$)/g);
+  
+  return parts.map(part => {
+    if (part.startsWith('$') && part.endsWith('$')) {
+      const formula = part.slice(1, -1);
+      try {
+        return katex.renderToString(formula, { 
+          throwOnError: false, 
+          displayMode: false 
+        });
+      } catch (e) {
+        console.error('KaTeX error in inline math:', e);
+        return part;
+      }
     }
-  } else {
-    // Escape HTML from text.content? Astro curly braces automatically escape, but we are returning a string to set:html 
-    // Wait, since we are doing manual string concat, we should escape. Or we can just build an array of elements.
-    // Astro components can return JSX elements.
-  }
+    // Escape other text characters to be safe for set:html
+    return part.replace(/&/g, '&amp;')
+               .replace(/</g, '&lt;')
+               .replace(/>/g, '&gt;')
+               .replace(/"/g, '&quot;')
+               .replace(/'/g, '&#039;');
+  }).join('');
 }
 ---
 {text && text.map((t: any) => {
+  // 1. Official Notion Equation type
   if (t.type === 'equation') {
     try {
-      const html = katex.renderToString(t.equation.expression, { throwOnError: false, displayMode: false });
-      return <span set:html={html} />;
+      const html = katex.renderToString(t.equation.expression, { 
+        throwOnError: false, 
+        displayMode: false 
+      });
+      return <span class="notion-inline-equation" set:html={html} />;
     } catch (e) {
       return <span>{t.plain_text}</span>;
     }
   }
 
+  // 2. Regular Text type (checking for $...$ patterns)
   let element: any = t.plain_text;
+  
+  if (t.type === 'text' && t.plain_text?.includes('$')) {
+    const html = renderMathInText(t.plain_text);
+    element = <span set:html={html} />;
+  }
 
+  // Apply Notion annotations
   if (t.annotations?.bold) element = <strong>{element}</strong>;
   if (t.annotations?.italic) element = <em>{element}</em>;
   if (t.annotations?.strikethrough) element = <del>{element}</del>;
   if (t.annotations?.underline) element = <u>{element}</u>;
   if (t.annotations?.code) element = <code class="notion-inline-code">{element}</code>;
   
-  // Custom color support can be added later
-
   if (t.href) {
     element = <a href={t.href} class="notion-link">{element}</a>;
   }

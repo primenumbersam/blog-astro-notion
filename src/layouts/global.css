@@ -108,15 +108,15 @@ h6 {
 }
 
 .notion-h1 {
-    font-size: 2rem;
-}
-
-.notion-h2 {
     font-size: 1.5rem;
 }
 
+.notion-h2 {
+    font-size: 1.3rem;
+}
+
 .notion-h3 {
-    font-size: 1.25rem;
+    font-size: 1.2rem;
 }
 
 .notion-list {
