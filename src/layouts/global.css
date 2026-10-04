@@ -363,30 +363,80 @@ h6 {
 
 /* Table */
 .notion-table-container {
+    width: 100%;
     overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
     margin: 2rem 0;
-    border-radius: 8px;
+    border-radius: 10px;
     border: 1px solid var(--color-border);
+    background-color: var(--color-bg-subtle);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.notion-table-container::-webkit-scrollbar {
+    height: 6px;
+}
+
+.notion-table-container::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.notion-table-container::-webkit-scrollbar-thumb {
+    background: var(--color-border);
+    border-radius: 3px;
 }
 
 .notion-table {
-    border-collapse: collapse;
-    font-size: 0.95rem;
+    width: 100%;
+    min-width: 520px;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 0.92rem;
+    line-height: 1.6;
+    text-align: left;
 }
 
 .notion-table-header {
-    background-color: var(--color-bg-subtle);
+    background-color: var(--color-code-bg);
+    color: var(--color-text);
     font-weight: 600;
-    text-align: left;
-    padding: 0.5rem 0.75rem;
-    border-bottom: 1px solid var(--color-border);
+    font-size: 0.88rem;
+    letter-spacing: 0.02em;
+    padding: 0.75rem 1rem;
+    border-bottom: 2px solid var(--color-border);
     border-right: 1px solid var(--color-border);
+    white-space: nowrap;
+    vertical-align: middle;
 }
 
 .notion-table-cell {
-    padding: 0.5rem 0.75rem;
+    padding: 0.75rem 1rem;
     border-bottom: 1px solid var(--color-border);
     border-right: 1px solid var(--color-border);
+    vertical-align: top;
+    word-break: keep-all;
+    overflow-wrap: break-word;
+}
+
+.notion-table tbody tr:nth-child(even) .notion-table-cell {
+    background-color: rgba(0, 0, 0, 0.015);
+}
+
+@media (prefers-color-scheme: dark) {
+    .notion-table tbody tr:nth-child(even) .notion-table-cell {
+        background-color: rgba(255, 255, 255, 0.02);
+    }
+}
+
+.notion-table tbody tr:hover .notion-table-cell {
+    background-color: rgba(59, 130, 246, 0.04);
+    transition: background-color 0.15s ease;
+}
+
+.notion-table-header:first-child,
+.notion-table-cell:first-child {
+    white-space: nowrap;
+    font-weight: 500;
 }
 
 .notion-table th:last-child,
@@ -394,9 +444,30 @@ h6 {
     border-right: none;
 }
 
-.notion-table tr:last-child th,
 .notion-table tr:last-child td {
     border-bottom: none;
+}
+
+@media (max-width: 768px) {
+    .notion-table-container {
+        margin: 1.5rem 0;
+        border-radius: 8px;
+    }
+
+    .notion-table {
+        min-width: 480px;
+        font-size: 0.85rem;
+        line-height: 1.55;
+    }
+
+    .notion-table-header {
+        padding: 0.6rem 0.75rem;
+        font-size: 0.82rem;
+    }
+
+    .notion-table-cell {
+        padding: 0.6rem 0.75rem;
+    }
 }
 
 /* Equation */
