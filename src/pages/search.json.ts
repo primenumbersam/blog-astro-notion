@@ -10,7 +10,7 @@ export async function GET() {
       slug: post.data.slug,
       description: post.data.description,
       tags: post.data.tags,
-      date: post.data.createdTime,
+      date: post.data.lastEdited,
     }));
 
   return new Response(JSON.stringify(searchIndex), {

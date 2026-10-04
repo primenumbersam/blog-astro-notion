@@ -6,7 +6,7 @@ export async function getStaticPaths({ paginate }: { paginate: any }) {
   const posts = await getCollection('posts');
   const privatePosts = posts.filter(post => post.data.isPrivate);
   const sorted = privatePosts.sort((a, b) =>
-    new Date(b.data.createdTime).getTime() - new Date(a.data.createdTime).getTime()
+    new Date(b.data.lastEdited).getTime() - new Date(a.data.lastEdited).getTime()
   );
   return paginate(sorted, { pageSize: 20 });
 }
@@ -34,7 +34,7 @@ const { page } = Astro.props;
             {post.data.tags?.map((tag: string) => (
               <a href={`/tags/${tag}`} class="post-tag">{tag}</a>
             ))}
-            <span class="post-date">{new Date(post.data.createdTime).toLocaleDateString()}</span>
+            <span class="post-date">{new Date(post.data.lastEdited).toLocaleDateString()}</span>
           </div>
         </div>
       </li>

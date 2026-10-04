@@ -1,5 +1,5 @@
 import type { Loader } from 'astro/loaders';
-import { notion, fetchBlockChildren } from './client';
+import { queryDatabase, fetchBlockChildren } from './client';
 import { downloadImage } from './images';
 
 export function notionLoader(options: {
@@ -14,7 +14,7 @@ export function notionLoader(options: {
             let cursor: string | undefined;
             const allPages: any[] = [];
             do {
-                const response = await notion.databases.query({
+                const response = await queryDatabase({
                     database_id: options.databaseId,
                     filter: options.filter,
                     start_cursor: cursor,

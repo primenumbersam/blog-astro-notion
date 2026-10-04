@@ -15,7 +15,7 @@ export async function getStaticPaths({ paginate }: { paginate: any }) {
 
   return Array.from(tags).flatMap(tag => {
     const filteredPosts = publicPosts.filter(post => post.data.tags?.includes(tag)).sort((a, b) => 
-      new Date(b.data.createdTime).getTime() - new Date(a.data.createdTime).getTime()
+      new Date(b.data.lastEdited).getTime() - new Date(a.data.lastEdited).getTime()
     );
     return paginate(filteredPosts, {
       params: { tag },
@@ -48,7 +48,7 @@ const { page } = Astro.props;
             {post.data.tags?.map((t: string) => (
               <a href={`/tags/${t}`} class="post-tag">{t}</a>
             ))}
-            <span class="post-date">{new Date(post.data.createdTime).toLocaleDateString()}</span>
+            <span class="post-date">{new Date(post.data.lastEdited).toLocaleDateString()}</span>
           </div>
         </div>
       </li>
